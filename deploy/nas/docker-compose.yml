@@ -1,0 +1,17 @@
+services:
+  wb2api:
+    image: ghcr.io/linguo2625469/workbuddy2api-panel:latest
+    container_name: workbuddy2api
+    restart: unless-stopped
+    user: "${PUID:-10001}:${PGID:-10001}"
+    environment:
+      TZ: Asia/Shanghai
+    ports:
+      - "7863:7863"
+    volumes:
+      - ./auths:/app/auths
+      - ./data:/app/data
+      # Mount the directory so panel configuration can be saved by atomic rename.
+      - ./conf:/app/conf
+    entrypoint: ["/app/wb2api"]
+    command: ["-config", "/app/conf/config.json"]

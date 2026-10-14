@@ -1,0 +1,20 @@
+# User deployment state and credentials
+auths/
+data/
+backups/
+config.json
+!skills/wb2api-setup/templates/config.json
+.env
+.env.*
+*.key
+*.pem
+*.log
+.chrome-agent-profile/
+
+# Generated container build context and exported images
+deploy/nas/build/
+*.tar
+*.tar.sha256
+*.tmp
+__pycache__/
+.DS_Store

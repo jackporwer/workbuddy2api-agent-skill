@@ -1,0 +1,5 @@
+3e7a2bc9ea92246103de7777d59fe1f3351ada5bfa979f90dabf25bcc941eaa8  wb2api-panel-v1.13.0-windows-amd64.zip
+43e3d1ce5b2f5fa91ebf5f145f4aacb36ad6d7dde4d6e49b6cea9c652f9b1fc9  wb2api-panel-v1.13.0-darwin-amd64.tar.gz
+de0d0b31e100eb8fda85cbbc03d8b0e31b7ee950b2e9a1f38afab5c86755c049  wb2api-panel-v1.13.0-darwin-arm64.tar.gz
+24681ed5cae01062f21e2c3d8038009137f1d2cac42b2223e8ac78dddfe90e75  wb2api-panel-v1.13.0-linux-amd64.tar.gz
+4a9c4768595534892cf8ba78696070f1a741d4ddc51592587288fc6d9753db7b  wb2api-panel-v1.13.0-linux-arm64.tar.gz
