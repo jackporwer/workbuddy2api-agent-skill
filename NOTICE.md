@@ -1,17 +1,18 @@
-# 来源与版本
+# 来源与附带文件说明
 
-本仓库当前主版本是 NAS Hub + 独立 Caddy HTTPS 的 Agent 部署封装。它根据实际极空间双服务架构整理，并去除所有私人运行参数与数据。
+本项目是 [linguo2625469/workbuddy2api-panel](https://github.com/linguo2625469/workbuddy2api-panel) 的 Agent Skill 封装与部署材料整理。原项目本身基于 Sliverkiss/workbuddy2api 演进，原始作者与增强分支作者的版权声明保留在 LICENSE 中。
 
-| 组成 | 来源 |
+| 本仓库文件 | 来源与改动 |
 |---|---|
-| 模型网关、面板、账号与协议实现 | https://github.com/ardeyouxipianyi/workbuddy2api-hub ，以原项目镜像运行，不修改其实现 |
-| HTTPS 服务 | https://github.com/caddyserver/caddy ，参考 Caddy 2.11.7，采用其上游许可 |
-| DNS-01 提供方 | https://github.com/caddy-dns/duckdns ，参考模块 v0.5.0 |
-| Skill、部署与维护流程、Compose 和模板 | 本仓库根据极空间运行架构编写与整理 |
-| 旧 Panel 版 | `legacy/panel/`，原来源及版权见其中 NOTICE.md 与根 LICENSE |
+| `skills/wb2api-setup/SKILL.md` | 将原项目安装、登录、验证和维护步骤整理为 Agent 可执行流程；安装时先检查原项目正式 Release |
+| `skills/wb2api-setup/resources/*` | 原项目 v1.13.0 Release 的五平台安装压缩包与 checksums.txt，二进制未修改 |
+| `skills/wb2api-setup/templates/config.json` | 基于原项目配置整理的 v1.13.0 备用模板，API Key 为占位符 |
+| `deploy/nas/config.example.json` | 基于原项目配置样例，真实部署前应设置自己的密钥；部署新版时优先使用新版包中的配置样例 |
+| `deploy/nas/docker-compose.yml` | 使用原项目 GHCR 镜像，改为配置目录挂载，并显式指定配置路径 |
+| `deploy/nas/Dockerfile` | 将原项目 Linux Release 二进制置入容器，保留非 root 运行、CA 证书与时区支持 |
+| `deploy/nas/build.ps1` | 从原项目 Release 获取对应 Linux 安装包与同版本校验文件，校验后准备 / 构建 / 导出镜像；不包含网关实现 |
+| `guides/*` | 根据原项目代码、部署方式与相关官方文档编写的使用说明 |
 
-参考 Hub v1.7.5 摘要固定在 env.example 中，仅用于可追溯部署。安装 / 升级时检查上游最新正式版本，确认对应 GHCR 版本、revision 与平台后再固定摘要。不得把 Release ZIP 哈希用作容器镜像摘要。
+安装新版本不会要求本仓库预先内嵌该版本。Agent 或构建脚本直接解析原项目的 Release，选择对应平台文件并校验。同版本的本地备用包可复用；备用包的 SHA256 不能用于校验其他版本。
 
-模板使用 Dockerfile 构建带 DuckDNS 插件的 Caddy，因此与参考 NAS 的“标准运行时 + 挂载自定义二进制”在打包方式上不同；保留了独立 HTTPS、持久目录、代理兼容路径和 DNS-01 流程。新构建二进制需要在目标平台验证。
-
-发行包不包含第三方网关二进制、账号、Key、DNS Token、证书、日志、私人域名或实际 NAS 路径。Caddy 及其依赖的许可由其项目 / 构建镜像保留；本仓库的部署材料按根 LICENSE 提供，保留历史来源版权。
+所有生成的账号凭据、运行配置、API Key、日志与浏览器数据均属于用户的私有部署，不应随本项目发布。

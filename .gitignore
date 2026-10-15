@@ -13,19 +13,8 @@ config.json
 
 # Generated container build context and exported images
 deploy/nas/build/
-legacy/panel/deploy/nas/build/
 *.tar
 *.tar.sha256
 *.tmp
 __pycache__/
 .DS_Store
-
-# Actual NAS runtime configuration and certificate material
-duckdns.env
-https/config/
-https/data/
-*.crt
-*.p12
-*.pfx
-!skills/wb2api-setup/assets/nas/env.example
-!skills/wb2api-setup/assets/nas/https/duckdns.env.example
