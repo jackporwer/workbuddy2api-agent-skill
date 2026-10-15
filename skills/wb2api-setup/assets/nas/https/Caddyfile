@@ -1,0 +1,22 @@
+{
+    admin off
+    persist_config off
+    auto_https disable_redirects
+}
+
+https://{$GATEWAY_DOMAIN}:{$HTTPS_PORT:7863} {
+    tls {
+        dns duckdns {env.DUCKDNS_API_TOKEN} {
+            resolver 223.5.5.5:53
+        }
+        resolvers 223.5.5.5:53 119.29.29.29:53
+        propagation_delay 20s
+        propagation_timeout 5m
+        ca https://acme-v02.api.letsencrypt.org/directory
+    }
+    @old_panel path /panel /panel/
+    rewrite @old_panel /
+    @old_health path /healthz
+    rewrite @old_health /health
+    reverse_proxy hub:7863
+}

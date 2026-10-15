@@ -1,0 +1,59 @@
+services:
+  hub:
+    image: ${HUB_IMAGE:?Set HUB_IMAGE in .env}
+    restart: unless-stopped
+    user: "${PUID:-10001}:${PGID:-10001}"
+    environment:
+      TZ: ${TZ:-Asia/Shanghai}
+      HOST: 0.0.0.0
+      PORT: "7863"
+      WB_PROXY_DEFAULT_REALM: cn
+      WB_PROXY_USAGE_DIR: /app/usage
+      PYTHONUNBUFFERED: "1"
+    command: ["python", "wb_proxy.py", "--host", "0.0.0.0", "--lan", "--accounts-dir", "/app/accounts", "--usage-dir", "/app/usage"]
+    ports:
+      - "127.0.0.1:${HUB_DIAG_PORT:-17866}:7863"
+    volumes:
+      - ./hub/accounts:/app/accounts
+      - ./hub/usage:/app/usage
+    dns:
+      - ${DNS_PRIMARY:-119.29.29.29}
+      - ${DNS_SECONDARY:-223.5.5.5}
+    healthcheck:
+      test: ["CMD", "python", "-c", "import json,urllib.request; d=json.load(urllib.request.urlopen('http://127.0.0.1:7863/health',timeout=4)); assert d.get('ok') is True"]
+      interval: 30s
+      timeout: 5s
+      start_period: 30s
+      retries: 3
+
+  https:
+    build:
+      context: ./https
+      args:
+        CADDY_VERSION: ${CADDY_VERSION:-2.11.7}
+        DUCKDNS_VERSION: ${DUCKDNS_VERSION:-v0.5.0}
+    image: local/wb2api-caddy-duckdns:${CADDY_VERSION:-2.11.7}-${DUCKDNS_VERSION:-v0.5.0}
+    restart: unless-stopped
+    user: "${PUID:-10001}:${PGID:-10001}"
+    environment:
+      TZ: ${TZ:-Asia/Shanghai}
+      GATEWAY_DOMAIN: ${GATEWAY_DOMAIN:?Set your domain in .env}
+      HTTPS_PORT: ${HTTPS_PORT:-7863}
+      XDG_DATA_HOME: /data
+      XDG_CONFIG_HOME: /config
+      GODEBUG: http2client=0
+    env_file:
+      - ./https/duckdns.env
+    ports:
+      - "${HTTPS_PORT:-7863}:${HTTPS_PORT:-7863}"
+    volumes:
+      - ./https/Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./https/data:/data
+      - ./https/config:/config
+    command: ["run", "--config", "/etc/caddy/Caddyfile", "--adapter", "caddyfile"]
+    dns:
+      - ${DNS_PRIMARY:-119.29.29.29}
+      - ${DNS_SECONDARY:-223.5.5.5}
+    depends_on:
+      hub:
+        condition: service_healthy
